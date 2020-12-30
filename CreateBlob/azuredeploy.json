@@ -2,9 +2,17 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.1",
     "apiProfile": "",
-    "parameters": {},
+    "parameters": {
+    	"projectName": {
+      	"type": "string",
+      	"minLength": 3,
+      	"maxLength": 11,
+      	"metadata": {
+        	"description": "Specify a project name that is used to generate resource names."
+      	}
+    },
     "variables": {
-        "storageAccountName": "[concat('storage', uniqueString(resourceGroup().id))]",
+        "storageAccountName": "[concat(parameters('projectName'), 'store')]",
         "storageBlobContainerName": "config",
         "userAssignedIdentityName": "configDeployer",
         "roleAssignmentName": "[guid(concat(resourceGroup().id, 'contributor'))]",
@@ -94,8 +102,8 @@
             "properties": {
                 "azPowerShellVersion": "3.0",
                 "scriptContent": "
-                    Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/Azure/azure-docs-json-samples/master/mslearn-arm-deploymentscripts-sample/appsettings.json' -outfile 'appsettings.json'
-                    $StorageAccount = Get-AzStorageAccount -ResourceGroupName 'armpipeline-rg' | Where-Object {$_.StorageAccountName -like 'storage*'}
+                    Invoke-RestMethod -Uri 'https://raw.githubusercontent.com/samuel-peeters-pxs/armpipeline-repo/main/CreateBlob/appsettings.json' -outfile 'appsettings.json'
+                    $StorageAccount = Get-AzStorageAccount -ResourceGroupName 'armpipeline-rg' | Where-Object {$_.StorageAccountName -like '*store'}
                     $Blob = Set-AzStorageBlobContent -File 'appsettings.json' -Container 'config' -blob 'appsettings.json' -context $StorageAccount.Context
                     $DeploymentScriptOutputs = @{}
                     $DeploymentScriptOutputs['Uri'] = $Blob.ICloudBlob.Uri
