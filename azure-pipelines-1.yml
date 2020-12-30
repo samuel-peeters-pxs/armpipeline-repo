@@ -14,6 +14,6 @@ steps:
   inputs:
     azureSubscription: 'armpipeline-conn'
     ScriptType: 'FilePath'
-    ScriptPath: 'CreateBlob/azuredeploy.json'
+    ScriptPath: 'https://raw.githubusercontent.com/samuel-peeters-pxs/armpipeline-repo/main/CreateBlob/azuredeploy.json'
     ScriptArguments: '-projectName armpipeline'
     azurePowerShellVersion: 'LatestVersion'
